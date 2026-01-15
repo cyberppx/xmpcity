@@ -3,184 +3,160 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>Ticarisk Ultra - High Performance</title>
+    <title>Ticarisk Elite - Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: { primary: "#3b82f6", "background-dark": "#050510", "card-dark": "#111122" },
+                    colors: { primary: "#3b82f6", gold: "#fbbf24", bgDark: "#05050a", cardDark: "#0f172a" },
                 },
             },
         };
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; user-select: none; background: #050510; color: white; -webkit-tap-highlight-color: transparent; }
-        .ios-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        body { font-family: 'Outfit', sans-serif; background-color: #05050a; color: #f8fafc; overflow-x: hidden; user-select: none; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); }
         .hidden { display: none !important; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .biz-locked { filter: grayscale(1) opacity(0.4); pointer-events: none; }
+        .ios-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .pulse-emerald { animation: pulse-emerald 2s infinite; }
+        @keyframes pulse-emerald { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         ::-webkit-scrollbar { width: 0px; }
-        .chat-bubble { border-radius: 18px; border-bottom-left-radius: 4px; }
-        .chat-bubble-me { border-radius: 18px; border-bottom-right-radius: 4px; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <div id="auth-screen" class="fixed inset-0 z-[200] bg-background-dark flex items-center justify-center p-6">
-        <div class="bg-card-dark w-full max-w-md p-10 rounded-[40px] border border-white/5 shadow-2xl text-center">
-            <div class="w-20 h-20 bg-primary/20 rounded-3xl mx-auto mb-6 flex items-center justify-center animate-pulse">
-                <span class="material-icons-round text-primary text-5xl">rocket_launch</span>
-            </div>
-            <h1 class="text-4xl font-black mb-2 tracking-tighter italic">TICARISK <span class="text-primary text-sm not-italic">V4</span></h1>
-            <p class="text-slate-500 text-sm mb-10">Zirveye giden yol burada başlar.</p>
+    <div id="auth-screen" class="fixed inset-0 z-[300] bg-bgDark flex items-center justify-center p-6">
+        <div class="glass w-full max-w-md p-10 rounded-[40px] shadow-2xl text-center">
+            <div class="text-6xl mb-6">🏙️</div>
+            <h1 class="text-4xl font-black mb-2 tracking-tighter">TICARISK ELITE</h1>
+            <p class="text-slate-400 text-sm mb-8">Ticaret İmparatorluğunu Yönet</p>
             <div class="space-y-4">
-                <input type="email" id="email" placeholder="E-posta" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary transition">
-                <input type="password" id="password" placeholder="Şifre" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 outline-none focus:border-primary transition">
+                <input type="email" id="email" placeholder="E-posta" class="w-full p-4 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-primary transition text-white">
+                <input type="password" id="password" placeholder="Şifre" class="w-full p-4 rounded-2xl bg-black/40 border border-white/10 outline-none focus:border-primary transition text-white">
                 <div class="grid grid-cols-2 gap-4 pt-4">
-                    <button onclick="handleAuth('login')" class="bg-primary hover:scale-105 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-500/20">GİRİŞ</button>
-                    <button onclick="handleAuth('register')" class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl font-bold transition-all border border-white/10">KAYIT</button>
+                    <button onclick="handleAuth('login')" class="bg-primary hover:scale-105 py-4 rounded-2xl font-black transition-all">GİRİŞ</button>
+                    <button onclick="handleAuth('register')" class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl font-black transition-all border border-white/10">KAYIT</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="game-screen" class="hidden opacity-0 transition-opacity duration-1000">
-        <header class="px-6 py-4 flex items-center justify-between sticky top-0 z-[100] bg-background-dark/80 ios-blur border-b border-white/5">
+    <div id="game-screen" class="hidden">
+        <header class="px-6 py-4 flex items-center justify-between sticky top-0 z-[100] bg-bgDark/80 ios-blur border-b border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <span class="material-icons-round text-white">grid_view</span>
+                <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+                    <span class="material-icons-round text-white">account_balance_wallet</span>
                 </div>
-                <span class="text-xl font-black tracking-tighter">TICARISK</span>
+                <h1 id="p-username" class="font-black tracking-tight">-</h1>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-full text-xs font-black border border-emerald-500/20" id="p-money">₺0</div>
-                <button onclick="logout()" class="w-10 h-10 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center transition hover:bg-red-500 hover:text-white">
-                    <span class="material-icons-round">power_settings_new</span>
-                </button>
+            <div class="flex items-center gap-4">
+                <div class="text-emerald-400 font-black text-sm px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20" id="p-money">0 ₺</div>
+                <button onclick="logout()" class="material-icons-round text-red-500 text-2xl">logout</button>
             </div>
         </header>
 
-        <main class="px-6 pt-6 pb-32 space-y-8 max-w-2xl mx-auto">
+        <main class="px-6 pt-6 pb-32 space-y-8 max-w-xl mx-auto">
             
-            <div class="bg-gradient-to-br from-card-dark to-slate-900 p-6 rounded-[32px] border border-white/5 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-8 opacity-10"><span class="material-icons-round text-9xl">payments</span></div>
-                <div class="flex items-center gap-4 relative z-10">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl font-black shadow-2xl shadow-blue-600/40" id="p-avatar">?</div>
+            <div class="glass p-6 rounded-[32px] relative overflow-hidden">
+                <div class="flex justify-between items-end mb-6">
                     <div>
-                        <h2 class="text-2xl font-black" id="p-username">-</h2>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] bg-primary px-2 py-0.5 rounded-md font-black uppercase tracking-wider" id="p-level">LV 1</span>
-                            <span class="text-[10px] text-slate-400 font-bold" id="p-xp">0/1000 XP</span>
-                        </div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Düzey & Deneyim</p>
+                        <h2 class="text-3xl font-black" id="p-level">LV 1</h2>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black text-primary" id="p-xp">0 XP</span>
                     </div>
                 </div>
-                <div class="mt-6 w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div class="w-full bg-black/40 h-3 rounded-full overflow-hidden">
                     <div id="xp-bar" class="bg-primary h-full w-0 transition-all duration-1000"></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="openBorsa()" class="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-3xl flex items-center gap-3 active:scale-95 transition">
-                    <span class="material-icons-round text-indigo-400">trending_up</span>
-                    <div class="text-left">
-                        <p class="text-xs font-black">BORSA</p>
-                        <p class="text-[9px] text-slate-500">Yatırım Yap</p>
-                    </div>
-                </button>
-                <button onclick="claimBonus()" class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-3xl flex items-center gap-3 active:scale-95 transition">
-                    <span class="material-icons-round text-yellow-400">auto_awesome</span>
-                    <div class="text-left">
-                        <p class="text-xs font-black">GÜNLÜK</p>
-                        <p class="text-[9px] text-slate-500" id="bonus-timer">Hemen Al!</p>
-                    </div>
-                </button>
+                <div class="glass p-4 rounded-3xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold mb-2">CRYPTO TCR</p>
+                    <p id="crypto-price" class="text-xl font-black text-blue-400">₺15.4</p>
+                    <button onclick="openCrypto()" class="mt-2 text-[10px] font-black bg-blue-500/20 text-blue-400 px-4 py-1 rounded-full uppercase">Al / Sat</button>
+                </div>
+                <div class="glass p-4 rounded-3xl text-center relative overflow-hidden">
+                    <p class="text-[10px] text-slate-400 font-bold mb-2">ŞANS ÇARKI</p>
+                    <div class="text-xl">🎡</div>
+                    <button onclick="spinWheel()" class="mt-2 text-[10px] font-black bg-gold/20 text-gold px-4 py-1 rounded-full uppercase">Çevir</button>
+                </div>
             </div>
 
             <section>
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-black tracking-tight">İŞ MERKEZİ</h3>
-                    <div id="active-work-indicator" class="hidden text-[10px] font-black text-blue-400 animate-pulse">ÇALIŞILIYOR...</div>
+                <h3 class="text-lg font-black mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-primary rounded-full"></span> İŞ MERKEZİ</h3>
+                <div id="work-progress-box" class="hidden mb-4 glass p-4 rounded-2xl text-center border-blue-500/50">
+                    <p class="text-xs font-black text-blue-400 mb-2 uppercase">Çalışılıyor...</p>
+                    <div class="w-full bg-black/40 h-2 rounded-full overflow-hidden"><div id="work-bar" class="bg-blue-500 h-full w-0"></div></div>
                 </div>
-                <div id="job-grid" class="grid grid-cols-1 gap-3"></div>
+                <div id="job-grid" class="space-y-3"></div>
             </section>
 
             <section>
-                <h3 class="text-lg font-black tracking-tight mb-4">İMPARATORLUK</h3>
+                <h3 class="text-lg font-black mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-emerald-500 rounded-full"></span> MÜLKLERİM</h3>
                 <div id="biz-grid" class="space-y-4"></div>
             </section>
 
-            <section class="bg-card-dark rounded-3xl p-6 border border-white/5">
-                <h3 class="text-sm font-black mb-4 flex items-center gap-2 text-slate-400">
-                    <span class="material-icons-round text-sm">emoji_events</span> EN ZENGİNLER
-                </h3>
-                <div id="leaderboard-list" class="space-y-4"></div>
+            <section class="glass p-6 rounded-[32px]">
+                <h3 class="text-xs font-black text-slate-500 mb-4 uppercase tracking-widest">Global Zenginler</h3>
+                <div id="leaderboard" class="space-y-4"></div>
             </section>
         </main>
 
-        <div id="chat-window" class="fixed inset-0 z-[150] bg-background-dark hidden flex flex-col">
-            <header class="p-6 border-b border-white/5 flex items-center justify-between ios-blur sticky top-0">
-                <h2 class="font-black flex items-center gap-2">🌍 GLOBAL SOHBET <span id="online-count" class="text-[10px] text-emerald-400 font-bold">0</span></h2>
-                <button onclick="toggleChat()" class="material-icons-round">close</button>
-            </header>
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
-            <div class="p-6 bg-card-dark border-t border-white/5 flex gap-2">
-                <input type="text" id="chat-input" placeholder="Mesajını yaz..." class="flex-1 bg-white/5 p-4 rounded-2xl outline-none focus:border-primary border border-transparent">
-                <button onclick="sendMessage()" class="bg-primary px-6 rounded-2xl material-icons-round">send</button>
-            </div>
-        </div>
+        <button onclick="toggleChat()" class="fixed bottom-28 right-6 w-14 h-14 bg-primary rounded-2xl shadow-2xl shadow-primary/40 flex items-center justify-center z-50 pulse-emerald">
+            <span class="material-icons-round text-white">chat</span>
+        </button>
 
-        <nav class="fixed bottom-0 left-0 right-0 p-6 z-[100]">
-            <div class="max-w-md mx-auto bg-card-dark/80 ios-blur rounded-[32px] border border-white/10 p-2 flex justify-between items-center shadow-2xl">
-                <button class="flex-1 py-3 flex flex-col items-center text-primary"><span class="material-icons-round">home</span></button>
-                <button onclick="toggleChat()" class="flex-1 py-3 flex flex-col items-center text-slate-500"><span class="material-icons-round">forum</span></button>
-                <button onclick="toggleOnline()" class="flex-1 py-3 flex flex-col items-center text-slate-500"><span class="material-icons-round">people</span></button>
-                <button onclick="openBorsa()" class="flex-1 py-3 flex flex-col items-center text-slate-500"><span class="material-icons-round">account_balance</span></button>
+        <nav class="fixed bottom-0 left-0 right-0 p-6 z-[150]">
+            <div class="max-w-md mx-auto glass rounded-[30px] p-2 flex justify-between items-center shadow-2xl">
+                <button class="flex-1 py-3 text-primary"><span class="material-icons-round">grid_view</span></button>
+                <button onclick="toggleOnline()" class="flex-1 py-3 text-slate-500"><span class="material-icons-round">groups</span></button>
+                <button onclick="toggleChat()" class="flex-1 py-3 text-slate-500"><span class="material-icons-round">forum</span></button>
             </div>
         </nav>
     </div>
 
-    <div id="online-modal" class="fixed inset-0 z-[160] bg-background-dark hidden flex flex-col">
-        <header class="p-6 border-b border-white/5 flex items-center justify-between">
-            <h2 class="font-black">AKTİF OYUNCULAR</h2>
-            <button onclick="toggleOnline()" class="material-icons-round">close</button>
-        </header>
-        <div id="online-list" class="flex-1 overflow-y-auto p-6 space-y-3"></div>
+    <div id="chat-modal" class="fixed inset-0 z-[200] bg-bgDark hidden flex flex-col">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center">
+            <h2 class="font-black">GLOBAL CHAT</h2>
+            <button onclick="toggleChat()" class="material-icons-round">close</button>
+        </div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+        <div class="p-6 glass border-t border-white/10 flex gap-2">
+            <input type="text" id="chat-input" placeholder="Mesaj..." class="flex-1 bg-black/40 p-4 rounded-2xl outline-none">
+            <button onclick="sendMessage()" class="bg-primary px-6 rounded-2xl material-icons-round">send</button>
+        </div>
     </div>
 
-    <div id="profile-modal" class="fixed inset-0 z-[210] bg-black/95 hidden flex items-center justify-center p-6 ios-blur">
-        <div class="bg-card-dark w-full max-w-sm rounded-[40px] border border-white/10 overflow-hidden shadow-2xl">
-            <div class="h-32 bg-gradient-to-br from-primary to-indigo-900 relative">
-                <button onclick="closeProfile()" class="absolute top-4 right-4 bg-black/20 p-2 rounded-full">×</button>
-                <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-24 h-24 bg-card-dark rounded-3xl border-4 border-card-dark flex items-center justify-center text-4xl font-black shadow-2xl" id="prof-avatar">?</div>
+    <div id="profile-modal" class="fixed inset-0 z-[400] bg-black/95 hidden flex items-center justify-center p-6 ios-blur">
+        <div class="glass w-full max-w-sm rounded-[40px] overflow-hidden">
+            <div class="h-24 bg-gradient-to-r from-primary to-blue-800 flex justify-end p-4">
+                <button onclick="closeProfile()" class="material-icons-round text-white">close</button>
             </div>
-            <div class="pt-14 pb-8 px-8 text-center">
-                <h2 class="text-2xl font-black" id="prof-username">-</h2>
-                <p class="text-primary text-[10px] font-black uppercase tracking-widest mt-1 mb-6" id="prof-rank">GİRİŞİMCİ</p>
-                
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-white/5 p-4 rounded-3xl">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase">BAKİYE</p>
-                        <p class="text-emerald-400 font-black" id="prof-money">₺0</p>
+            <div class="px-8 pb-8 text-center -mt-12">
+                <div class="w-24 h-24 bg-cardDark rounded-3xl border-4 border-cardDark mx-auto flex items-center justify-center text-4xl font-black shadow-2xl" id="prof-avatar">?</div>
+                <h2 class="text-2xl font-black mt-4" id="prof-username">-</h2>
+                <div class="grid grid-cols-2 gap-3 my-6">
+                    <div class="bg-white/5 p-4 rounded-3xl text-left">
+                        <p class="text-[10px] text-slate-500 font-bold">BAKİYE</p>
+                        <p class="text-emerald-400 font-black text-sm" id="prof-money">0 ₺</p>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-3xl">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase">DÜZEY</p>
-                        <p class="text-blue-400 font-black" id="prof-lv">Lv 0</p>
+                    <div class="bg-white/5 p-4 rounded-3xl text-left">
+                        <p class="text-[10px] text-slate-500 font-bold">SEVİYE</p>
+                        <p class="text-blue-400 font-black text-sm" id="prof-level">LV 0</p>
                     </div>
                 </div>
-
-                <div class="text-left space-y-3">
-                    <p class="text-[10px] text-slate-500 font-black uppercase">MÜLKLER & VARLIKLAR</p>
+                <div class="bg-white/5 p-4 rounded-3xl text-left">
+                    <p class="text-[10px] text-slate-400 font-bold mb-3 uppercase">Sahip Olunan Mülkler</p>
                     <div id="prof-assets" class="flex flex-wrap gap-2"></div>
                 </div>
-
-                <div class="mt-8 flex gap-2">
-                    <button onclick="sendMoneyPrompt()" class="flex-1 bg-primary py-4 rounded-2xl font-black text-xs active:scale-95 transition">EFT GÖNDER</button>
-                </div>
+                <button onclick="sendMoney()" class="w-full mt-6 bg-primary py-4 rounded-2xl font-black active:scale-95 transition">PARA GÖNDER (EFT)</button>
             </div>
         </div>
     </div>
@@ -206,131 +182,117 @@
 
         let currentUser = null;
         let userData = {};
-        let viewedUserId = null;
         let workInterval = null;
+        let viewedUid = null;
 
         const JOBS = [
-            { id: 1, name: "Garsonluk", minLv: 1, reward: 350, time: 60, icon: "coffee" },
-            { id: 4, name: "Kurye", minLv: 4, reward: 1200, time: 120, icon: "delivery_dining" },
-            { id: 7, name: "Siber Güvenlik", minLv: 10, reward: 5000, time: 300, icon: "terminal" }
+            { id: 1, name: "Market Reyon", lv: 1, reward: 500, time: 60, icon: "shopping_cart" },
+            { id: 2, name: "Şehir Kuryesi", lv: 5, reward: 2000, time: 180, icon: "speed" },
+            { id: 3, name: "Yazılım Stajı", lv: 10, reward: 8500, time: 600, icon: "code" }
         ];
 
-        const BUSINESSES = [
-            { id: 'kuafor', name: "Berber Salonu", minLv: 5, cost: 25000, income: 1500, icon: "content_cut" },
-            { id: 'market', name: "Mahalle Marketi", minLv: 12, cost: 100000, income: 7500, icon: "store" },
-            { id: 'galeri', name: "Lüks Galeri", minLv: 25, cost: 1500000, income: 120000, icon: "directions_car" }
+        const BIZ = [
+            { id: 'kafe', name: "Lüks Kafe", lv: 10, cost: 100000, income: 8000, icon: "local_cafe" },
+            { id: 'galeri', name: "Oto Galeri", lv: 20, cost: 2000000, income: 150000, icon: "directions_car" },
+            { id: 'banka', name: "Yatırım Bankası", lv: 50, cost: 50000000, income: 4500000, icon: "account_balance" }
         ];
 
         // --- AUTH ---
         window.handleAuth = async (type) => {
             const e = document.getElementById('email').value;
             const p = document.getElementById('password').value;
-            if(!e || !p) return alert("Bilgileri gir.");
+            if(!e || !p) return alert("Boş bırakma.");
             try {
                 if(type === 'register') {
                     const r = await createUserWithEmailAndPassword(auth, e, p);
-                    await set(ref(db, `users/${r.user.uid}`), { username: e.split('@')[0], money: 5000, xp: 0, level: 1, isOnline: true });
+                    await set(ref(db, `users/${r.user.uid}`), { username: e.split('@')[0], money: 10000, xp: 0, level: 1, isOnline: true });
                 } else { await signInWithEmailAndPassword(auth, e, p); }
-            } catch (err) { alert(err.message); }
+            } catch (err) { alert("Hata: " + err.message); }
         };
 
-        window.logout = () => { if(currentUser) update(ref(db, `users/${currentUser.uid}`), { isOnline: false }).then(() => signOut(auth)); };
+        window.logout = () => { update(ref(db, `users/${currentUser.uid}`), { isOnline: false }).then(() => { signOut(auth); location.reload(); }); };
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if(user) {
                 currentUser = user;
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('game-screen').classList.remove('hidden');
-                document.getElementById('game-screen').classList.add('opacity-100');
                 onDisconnect(ref(db, `users/${user.uid}`)).update({ isOnline: false });
-                loadCoreData();
+                update(ref(db, `users/${user.uid}`), { isOnline: true });
+                loadData();
                 listenChat();
                 listenLeaderboard();
-                listenOnline();
             } else {
-                location.reload();
+                document.getElementById('auth-screen').classList.remove('hidden');
             }
         });
 
-        function loadCoreData() {
+        // --- CORE DATA ---
+        function loadData() {
             onValue(ref(db, `users/${currentUser.uid}`), (snap) => {
-                userData = snap.val();
-                if(!userData) return;
-                document.getElementById('p-username').innerText = userData.username;
-                document.getElementById('p-money').innerText = "₺" + userData.money.toLocaleString();
+                userData = snap.val(); if(!userData) return;
+                document.getElementById('p-username').innerText = userData.username.toUpperCase();
+                document.getElementById('p-money').innerText = userData.money.toLocaleString() + " ₺";
                 document.getElementById('p-level').innerText = "LV " + userData.level;
-                document.getElementById('p-xp').innerText = `${userData.xp % 1000} / 1000 XP`;
-                document.getElementById('p-avatar').innerText = userData.username[0].toUpperCase();
+                document.getElementById('p-xp').innerText = (userData.xp % 1000) + " / 1000 XP";
                 document.getElementById('xp-bar').style.width = (userData.xp % 1000) / 10 + "%";
                 renderJobs();
                 renderBiz();
             });
         }
 
-        // --- JOBS & BIZ ---
         function renderJobs() {
-            const container = document.getElementById('job-grid'); container.innerHTML = '';
+            const grid = document.getElementById('job-grid'); grid.innerHTML = '';
             JOBS.forEach(j => {
-                const locked = userData.level < j.minLv;
-                container.innerHTML += `
-                <div class="bg-card-dark p-5 rounded-[24px] border border-white/5 flex items-center justify-between transition hover:border-primary/50 ${locked ? 'opacity-40' : ''}">
+                const lock = userData.level < j.lv;
+                grid.innerHTML += `
+                <div class="glass p-5 rounded-3xl flex items-center justify-between ${lock ? 'opacity-30' : ''}">
                     <div class="flex items-center gap-4">
                         <span class="material-icons-round text-primary">${j.icon}</span>
-                        <div>
-                            <p class="font-black text-sm uppercase">${j.name}</p>
-                            <p class="text-[10px] text-emerald-400 font-bold">₺${j.reward} • ${j.time}sn</p>
-                        </div>
+                        <div><p class="font-black text-sm">${j.name}</p><p class="text-[10px] text-emerald-400 font-bold">₺${j.reward}</p></div>
                     </div>
-                    <button onclick='startWork(${JSON.stringify(j)})' ${locked || workInterval ? 'disabled' : ''} class="bg-white/5 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-primary transition">BAŞLA</button>
+                    <button onclick='startWork(${JSON.stringify(j)})' ${lock || workInterval ? 'disabled' : ''} class="bg-primary px-5 py-2 rounded-xl text-xs font-black">BAŞLA</button>
                 </div>`;
             });
         }
 
         window.startWork = (j) => {
             if(workInterval) return;
-            const ind = document.getElementById('active-work-indicator'); ind.classList.remove('hidden');
-            let t = j.time;
+            const box = document.getElementById('work-progress-box'); box.classList.remove('hidden');
+            let t = 0;
             workInterval = setInterval(() => {
-                t--;
-                if(t <= 0) {
-                    clearInterval(workInterval); workInterval = null; ind.classList.add('hidden');
-                    const nXp = (userData.xp || 0) + 150;
-                    update(ref(db, `users/${currentUser.uid}`), { 
-                        money: userData.money + j.reward, 
-                        xp: nXp, 
-                        level: Math.floor(nXp/1000) + 1 
-                    });
+                t++;
+                document.getElementById('work-bar').style.width = (t/j.time)*100 + "%";
+                if(t >= j.time) {
+                    clearInterval(workInterval); workInterval = null; box.classList.add('hidden');
+                    const nXp = (userData.xp || 0) + 200;
+                    update(ref(db, `users/${currentUser.uid}`), { money: userData.money + j.reward, xp: nXp, level: Math.floor(nXp/1000) + 1 });
                 }
             }, 1000);
         };
 
         function renderBiz() {
-            const container = document.getElementById('biz-grid'); container.innerHTML = '';
-            BUSINESSES.forEach(b => {
-                const isOwned = userData.ownedBiz && userData.ownedBiz[b.id];
-                const locked = userData.level < b.minLv;
-                const lastCollect = isOwned ? userData.ownedBiz[b.id].lastCollect : 0;
-                const canCollect = Date.now() - lastCollect >= 3600000;
+            const grid = document.getElementById('biz-grid'); grid.innerHTML = '';
+            BIZ.forEach(b => {
+                const owned = userData.ownedBiz && userData.ownedBiz[b.id];
+                const lock = userData.level < b.lv;
+                const last = owned ? owned.lastCollect : 0;
+                const ready = Date.now() - last >= 3600000;
 
-                container.innerHTML += `
-                <div class="bg-card-dark p-6 rounded-[32px] border border-white/5 flex flex-col gap-4 ${locked ? 'biz-locked' : ''}">
-                    <div class="flex items-center justify-between">
+                grid.innerHTML += `
+                <div class="glass p-6 rounded-[32px] ${lock ? 'opacity-20' : ''}">
+                    <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-primary">
-                                <span class="material-icons-round">${b.icon}</span>
-                            </div>
-                            <div>
-                                <p class="font-black text-sm">${b.name}</p>
-                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Saatlik: ₺${b.income.toLocaleString()}</p>
-                            </div>
+                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-emerald-400"><span class="material-icons-round">${b.icon}</span></div>
+                            <div><p class="font-black text-sm">${b.name}</p><p class="text-[10px] text-slate-500 font-bold">Gelir: ₺${b.income}/saat</p></div>
                         </div>
-                        ${locked ? `<span class="text-xs font-black text-slate-700 uppercase">LV ${b.minLv}</span>` : ''}
+                        ${lock ? `<span class="text-xs font-black">LV ${b.lv}</span>` : ''}
                     </div>
-                    ${isOwned ? 
-                        `<button onclick="collectBiz('${b.id}', ${b.income})" ${!canCollect ? 'disabled' : ''} class="w-full py-4 rounded-2xl font-black text-[10px] transition ${canCollect ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20' : 'bg-white/5 text-slate-600'}">
-                            ${canCollect ? 'KAZANCI TOPLA' : 'ÜRETİLİYOR...'}
+                    ${owned ? 
+                        `<button onclick="collectBiz('${b.id}', ${b.income})" ${!ready ? 'disabled' : ''} class="w-full py-4 rounded-2xl font-black text-xs ${ready ? 'bg-emerald-500 pulse-emerald' : 'bg-white/5 text-slate-500'}">
+                            ${ready ? 'KAZANCI TOPLA' : 'BEKLENİYOR...'}
                         </button>` :
-                        `<button onclick="buyBiz('${b.id}', ${b.cost})" class="w-full py-4 rounded-2xl font-black text-[10px] bg-primary shadow-lg shadow-primary/20">SATIN AL (₺${b.cost.toLocaleString()})</button>`
+                        `<button onclick="buyBiz('${b.id}', ${b.cost})" class="w-full py-4 rounded-2xl bg-primary font-black text-xs">SATIN AL (₺${b.cost.toLocaleString()})</button>`
                     }
                 </div>`;
             });
@@ -340,7 +302,7 @@
             if(userData.money >= cost) {
                 update(ref(db, `users/${currentUser.uid}/ownedBiz/${id}`), { lastCollect: Date.now() });
                 update(ref(db, `users/${currentUser.uid}`), { money: userData.money - cost });
-            } else alert("Yeterli bakiye yok!");
+            } else alert("Para yetersiz!");
         };
 
         window.collectBiz = (id, inc) => {
@@ -348,101 +310,49 @@
             update(ref(db, `users/${currentUser.uid}`), { money: userData.money + inc });
         };
 
-        // --- LİDERLİK & SOSYAL ---
+        // --- SOCIAL & LEADERBOARD ---
         function listenLeaderboard() {
-            const lbQuery = query(ref(db, 'users'), orderByChild('money'), limitToLast(10));
-            onValue(lbQuery, (snap) => {
-                const container = document.getElementById('leaderboard-list'); container.innerHTML = '';
-                const users = [];
-                snap.forEach(s => { users.push(s.val()); });
+            const lbQ = query(ref(db, 'users'), orderByChild('money'), limitToLast(10));
+            onValue(lbQ, (snap) => {
+                const list = document.getElementById('leaderboard'); list.innerHTML = '';
+                const users = []; snap.forEach(s => { users.push({uid: s.key, ...s.val()}); });
                 users.reverse().forEach((u, i) => {
-                    container.innerHTML += `
-                    <div class="flex items-center gap-3">
-                        <span class="text-[10px] font-black text-slate-600 w-4">${i+1}.</span>
-                        <div class="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-xs font-bold">${u.username[0].toUpperCase()}</div>
-                        <span class="text-xs font-bold flex-1 truncate">${u.username}</span>
-                        <span class="text-xs font-black text-emerald-400">₺${(u.money/1000).toFixed(1)}K</span>
+                    list.innerHTML += `
+                    <div onclick="viewProfile('${u.uid}')" class="flex items-center gap-3 cursor-pointer">
+                        <span class="text-[10px] font-black w-4 text-slate-600">${i+1}</span>
+                        <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center font-black">${u.username[0].toUpperCase()}</div>
+                        <div class="flex-1 truncate font-bold text-sm">${u.username}</div>
+                        <div class="text-emerald-400 font-black text-xs">₺${(u.money/1000000).toFixed(2)}M</div>
                     </div>`;
                 });
             });
         }
 
-        function listenChat() {
-            onValue(ref(db, 'chat'), (snap) => {
-                const box = document.getElementById('chat-messages'); box.innerHTML = '';
-                const data = snap.val();
-                if(data) {
-                    Object.values(data).slice(-30).forEach(m => {
-                        const isMe = m.uid === currentUser.uid;
-                        box.innerHTML += `
-                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                            <span class="text-[9px] text-slate-500 mb-1 ml-2 mr-2" onclick="viewProfile('${m.uid}')">${m.name}</span>
-                            <div class="${isMe ? 'bg-primary chat-bubble-me' : 'bg-white/5 chat-bubble'} p-4 text-sm max-w-[80%]">
-                                ${m.msg}
-                            </div>
-                        </div>`;
-                    });
-                    box.scrollTop = box.scrollHeight;
-                }
-            });
-        }
-
-        window.sendMessage = () => {
-            const inp = document.getElementById('chat-input');
-            if(!inp.value.trim()) return;
-            push(ref(db, 'chat'), { uid: currentUser.uid, name: userData.username, msg: inp.value, time: serverTimestamp() });
-            inp.value = '';
-        };
-
-        function listenOnline() {
-            onValue(ref(db, 'users'), (snap) => {
-                const list = document.getElementById('online-list');
-                const count = document.getElementById('online-count');
-                list.innerHTML = ''; let online = 0;
-                snap.forEach(s => {
-                    const u = s.val();
-                    if(u.isOnline) {
-                        online++;
-                        list.innerHTML += `
-                        <div onclick="viewProfile('${s.key}')" class="bg-card-dark p-5 rounded-3xl border border-white/5 flex items-center justify-between active:scale-95 transition">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-black text-primary">${u.username[0].toUpperCase()}</div>
-                                <p class="font-bold text-sm">${u.username}</p>
-                            </div>
-                            <span class="text-[10px] text-emerald-400 font-black">ONLINE</span>
-                        </div>`;
-                    }
-                });
-                count.innerText = online + " AKTİF";
-            });
-        }
-
-        window.viewProfile = async (id) => {
-            const snap = await get(ref(db, `users/${id}`));
-            const data = snap.val(); if(!data) return;
-            viewedUserId = id;
-            document.getElementById('prof-username').innerText = data.username;
-            document.getElementById('prof-money').innerText = "₺" + data.money.toLocaleString();
-            document.getElementById('prof-lv').innerText = "Lv " + data.level;
-            document.getElementById('prof-avatar').innerText = data.username[0].toUpperCase();
+        window.viewProfile = async (uid) => {
+            const snap = await get(ref(db, `users/${uid}`));
+            const d = snap.val(); if(!d) return;
+            viewedUid = uid;
+            document.getElementById('prof-username').innerText = d.username.toUpperCase();
+            document.getElementById('prof-money').innerText = d.money.toLocaleString() + " ₺";
+            document.getElementById('prof-level').innerText = "LV " + d.level;
+            document.getElementById('prof-avatar').innerText = d.username[0].toUpperCase();
             
-            const assetsBox = document.getElementById('prof-assets'); assetsBox.innerHTML = '';
-            if(data.ownedBiz) {
-                Object.keys(data.ownedBiz).forEach(key => {
-                    const b = BUSINESSES.find(x => x.id === key);
-                    assetsBox.innerHTML += `<div class="bg-primary/10 text-primary px-3 py-1.5 rounded-xl text-[10px] font-black">${b.icon.toUpperCase()} ${b.name}</div>`;
+            const assets = document.getElementById('prof-assets'); assets.innerHTML = '';
+            if(d.ownedBiz) {
+                Object.keys(d.ownedBiz).forEach(k => {
+                    const b = BIZ.find(x => x.id === k);
+                    if(b) assets.innerHTML += `<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black">${b.name}</span>`;
                 });
-            } else { assetsBox.innerHTML = '<span class="text-xs text-slate-600 italic">Mülk bulunmuyor.</span>'; }
+            } else assets.innerHTML = '<p class="text-xs text-slate-500 italic">Hiç mülkü yok.</p>';
             
             document.getElementById('profile-modal').classList.remove('hidden');
         };
 
-        window.sendMoneyPrompt = () => {
-            const m = prompt("Gönderilecek miktar (₺):");
-            if(m && !isNaN(m) && m > 0 && userData.money >= m) {
-                get(ref(db, `users/${viewedUserId}`)).then(s => {
-                    const targetData = s.val();
-                    update(ref(db, `users/${viewedUserId}`), { money: targetData.money + parseInt(m) });
+        window.sendMoney = () => {
+            const m = prompt("Miktar (₺):");
+            if(m && !isNaN(m) && userData.money >= m) {
+                get(ref(db, `users/${viewedUid}`)).then(s => {
+                    update(ref(db, `users/${viewedUid}`), { money: s.val().money + parseInt(m) });
                     update(ref(db, `users/${currentUser.uid}`), { money: userData.money - parseInt(m) });
                     alert("Transfer Başarılı!");
                     closeProfile();
@@ -450,17 +360,46 @@
             }
         };
 
-        // --- UI HELPERS ---
-        window.toggleChat = () => document.getElementById('chat-window').classList.toggle('hidden');
-        window.toggleOnline = () => document.getElementById('online-modal').classList.toggle('hidden');
-        window.closeProfile = () => document.getElementById('profile-modal').classList.add('hidden');
-        window.openBorsa = () => alert("Borsa Simülasyonu: Şirketler şu an stabil. Yakında halka arzlar başlayacak!");
-        window.claimBonus = () => {
-            update(ref(db, `users/${currentUser.uid}`), { money: userData.money + 1000 });
-            alert("Günlük 1.000 TL bonus kazandın!");
+        // --- CHAT ---
+        window.sendMessage = () => {
+            const i = document.getElementById('chat-input');
+            if(!i.value.trim()) return;
+            push(ref(db, 'chat'), { uid: currentUser.uid, name: userData.username, msg: i.value, time: serverTimestamp() });
+            i.value = '';
         };
 
-        function formatTime(s) { return s + "sn"; }
+        function listenChat() {
+            onValue(ref(db, 'chat'), (snap) => {
+                const box = document.getElementById('chat-messages'); box.innerHTML = '';
+                snap.forEach(s => {
+                    const m = s.val();
+                    const isMe = m.uid === currentUser.uid;
+                    box.innerHTML += `
+                    <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                        <span class="text-[9px] text-slate-500 mb-1 px-2" onclick="viewProfile('${m.uid}')">${m.name}</span>
+                        <div class="${isMe ? 'bg-primary rounded-tr-none' : 'bg-white/5 rounded-tl-none'} p-4 rounded-3xl text-sm max-w-[85%]">${m.msg}</div>
+                    </div>`;
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        // --- UI HELPERS ---
+        window.toggleChat = () => document.getElementById('chat-modal').classList.toggle('hidden');
+        window.closeProfile = () => document.getElementById('profile-modal').classList.add('hidden');
+        window.spinWheel = () => {
+            const won = Math.floor(Math.random() * 5000);
+            update(ref(db, `users/${currentUser.uid}`), { money: userData.money + won });
+            alert("Çark döndü ve ₺" + won + " kazandın!");
+        };
+        window.openCrypto = () => alert("TCR Kripto Borsası: Alım yapmak için Seviye 15 olmalısın.");
+
+        setInterval(() => {
+            const price = (15 + Math.random() * 10).toFixed(1);
+            const el = document.getElementById('crypto-price');
+            if(el) el.innerText = "₺" + price;
+        }, 5000);
+
     </script>
 </body>
 </html>
