@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticaret İmparatorluğu - Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; color: white; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .progress-bar { transition: width 1s linear; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="auth-screen" class="max-w-md mx-auto mt-20 glass p-8 rounded-2xl">
+        <h2 class="text-3xl font-bold mb-6 text-center text-blue-400">Ticaret Simülatörü</h2>
+        <input type="email" id="email" placeholder="E-posta" class="w-full mb-4 p-3 rounded bg-slate-800 border border-slate-700 outline-none">
+        <input type="password" id="password" placeholder="Şifre" class="w-full mb-6 p-3 rounded bg-slate-800 border border-slate-700 outline-none">
+        <div class="flex gap-4">
+            <button onclick="handleAuth('login')" class="flex-1 bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-bold">Giriş Yap</button>
+            <button onclick="handleAuth('register')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 p-3 rounded-lg font-bold">Kayıt Ol</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden max-w-6xl mx-auto">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass p-4 rounded-xl text-center">
+                <p class="text-gray-400 text-sm">Oyuncu</p>
+                <p id="p-name" class="font-bold text-xl text-blue-300">-</p>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <p class="text-gray-400 text-sm">Para</p>
+                <p id="p-money" class="font-bold text-xl text-emerald-400">0 TL</p>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <p class="text-gray-400 text-sm">Seviye (XP)</p>
+                <p id="p-level" class="font-bold text-xl text-yellow-400">1 (0/100)</p>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <button onclick="logout()" class="text-red-400 hover:underline mt-2">Çıkış Yap</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 space-y-6">
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">💼 Çalışma Alanı</h3>
+                    <div id="job-info" class="mb-4 p-4 bg-slate-800 rounded-lg">
+                        <p id="current-job-text" class="text-lg">Şu an boşta mısın? Bir işe başla!</p>
+                        <div id="work-timer-container" class="hidden mt-4">
+                            <div class="w-full bg-gray-700 h-4 rounded-full overflow-hidden">
+                                <div id="work-progress" class="progress-bar bg-blue-500 h-full w-0"></div>
+                            </div>
+                            <p id="timer-label" class="text-center mt-2 text-sm font-mono text-blue-300">00:00</p>
+                        </div>
+                    </div>
+                    
+                    <div id="job-buttons" class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        </div>
+                </div>
+
+                <div id="business-section" class="glass p-6 rounded-2xl hidden">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">🏢 Kendi İşletmen (Level 10+)</h3>
+                    <div id="business-status" class="bg-purple-900/20 border border-purple-500/30 p-4 rounded-lg">
+                        <p id="biz-text">Henüz işletmen yok. Kurmak için 50.000 TL gerekli.</p>
+                        <button id="buy-biz-btn" onclick="buyBusiness()" class="mt-4 bg-purple-600 px-6 py-2 rounded-lg font-bold">Kuaför Kur (50k)</button>
+                        <button id="collect-biz-btn" onclick="collectBusiness()" class="hidden mt-4 bg-emerald-600 px-6 py-2 rounded-lg font-bold">Kazancı Topla (275 TL)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="glass p-6 rounded-2xl h-[400px] flex flex-col">
+                    <h3 class="font-bold mb-4 border-b border-gray-700 pb-2">Global Chat</h3>
+                    <div id="chat-box" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-2 text-sm"></div>
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Mesaj yaz..." class="flex-1 bg-slate-800 p-2 rounded outline-none border border-slate-700 text-sm">
+                        <button onclick="sendMessage()" class="bg-blue-600 px-4 rounded text-sm">Gönder</button>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl h-[300px] flex flex-col">
+                    <h3 class="font-bold mb-4 border-b border-gray-700 pb-2">Aktif Oyuncular</h3>
+                    <div id="active-users" class="flex-1 overflow-y-auto space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
+        <div class="glass max-w-sm w-full p-8 rounded-3xl text-center relative">
+            <button onclick="closeProfile()" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <div class="w-20 h-20 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold" id="prof-avatar">?</div>
+            <h2 id="prof-name" class="text-2xl font-bold mb-2">Oyuncu İsmi</h2>
+            <div class="space-y-2 text-left bg-slate-800/50 p-4 rounded-xl">
+                <p>💰 Para: <span id="prof-money" class="text-emerald-400 font-mono">0 TL</span></p>
+                <p>📈 Seviye: <span id="prof-level" class="text-yellow-400 font-mono">1</span></p>
+                <p>🏪 İşletme: <span id="prof-biz" class="text-purple-400 font-mono">Yok</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, onValue, update, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // CONFIG (Kendi bilgilerini buraya aktardın)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqiGFukHcCJurBS8t35i2Q3s9nQvPdmcM",
+            authDomain: "xmps-bba4a.firebaseapp.com",
+            databaseURL: "https://xmps-bba4a-default-rtdb.firebaseio.com",
+            projectId: "xmps-bba4a",
+            storageBucket: "xmps-bba4a.firebasestorage.app",
+            messagingSenderId: "348983388349",
+            appId: "1:348983388349:web:e2e5c3ed06c08ef3382fd4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let userData = {};
+        let workInterval = null;
+
+        const JOBS = [
+            { id: 1, name: "Garsonluk", minLv: 1, reward: 150, time: 120, xp: 20 },
+            { id: 4, name: "Kurye", minLv: 4, reward: 450, time: 240, xp: 50 },
+            { id: 7, name: "Resepsiyon", minLv: 7, reward: 900, time: 480, xp: 120 },
+            { id: 9, name: "Müşteri Temsilcisi", minLv: 9, reward: 1600, time: 600, xp: 200 }
+        ];
+
+        // --- AUTH İŞLEMLERİ ---
+        window.handleAuth = async (type) => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            try {
+                if (type === 'register') {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(db, 'users/' + res.user.uid), {
+                        username: email.split('@')[0],
+                        money: 0,
+                        xp: 0,
+                        level: 1,
+                        hasBusiness: false,
+                        lastBizCollect: 0,
+                        isOnline: true
+                    });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+            } catch (err) { alert("Hata: " + err.message); }
+        };
+
+        window.logout = () => {
+            update(ref(db, 'users/' + currentUser.uid), { isOnline: false });
+            signOut(auth);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                listenUserData();
+                listenChat();
+                listenActiveUsers();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('game-screen').classList.add('hidden');
+            }
+        });
+
+        // --- VERİ TAKİBİ ---
+        function listenUserData() {
+            onValue(ref(db, 'users/' + currentUser.uid), (snapshot) => {
+                userData = snapshot.val();
+                if (!userData) return;
+
+                document.getElementById('p-name').innerText = userData.username;
+                document.getElementById('p-money').innerText = userData.money.toLocaleString() + " TL";
+                document.getElementById('p-level').innerText = `${userData.level} (${userData.xp} XP)`;
+                
+                renderJobs();
+                handleBusinessUI();
+                update(ref(db, 'users/' + currentUser.uid), { isOnline: true });
+            });
+        }
+
+        // --- İŞ SİSTEMİ ---
+        function renderJobs() {
+            const container = document.getElementById('job-buttons');
+            container.innerHTML = '';
+            JOBS.forEach(job => {
+                const isLocked = userData.level < job.minLv;
+                const btn = document.createElement('button');
+                btn.className = `p-3 rounded-lg text-sm font-bold transition ${isLocked ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'}`;
+                btn.innerHTML = `${job.name}<br><span class="text-[10px]">${isLocked ? 'Lv ' + job.minLv : job.reward + ' TL'}</span>`;
+                btn.disabled = isLocked || workInterval;
+                btn.onclick = () => startWork(job);
+                container.appendChild(btn);
+            });
+        }
+
+        window.startWork = (job) => {
+            if (workInterval) return;
+            
+            const container = document.getElementById('work-timer-container');
+            const progress = document.getElementById('work-progress');
+            const label = document.getElementById('timer-label');
+            const text = document.getElementById('current-job-text');
+
+            container.classList.remove('hidden');
+            text.innerText = `${job.name} yapılıyor...`;
+            
+            let timeLeft = job.time;
+            const totalTime = job.time;
+
+            workInterval = setInterval(() => {
+                timeLeft--;
+                const percent = ((totalTime - timeLeft) / totalTime) * 100;
+                progress.style.width = percent + "%";
+                label.innerText = formatTime(timeLeft);
+
+                if (timeLeft <= 0) {
+                    clearInterval(workInterval);
+                    workInterval = null;
+                    text.innerHTML = `<span class="text-emerald-400 font-bold">${job.reward} TL Kazanıldı!</span>`;
+                    container.classList.add('hidden');
+                    
+                    // Veriyi Güncelle
+                    const newXP = userData.xp + job.xp;
+                    const newLevel = Math.floor(newXP / 100) + 1;
+                    update(ref(db, 'users/' + currentUser.uid), {
+                        money: userData.money + job.reward,
+                        xp: newXP,
+                        level: newLevel
+                    });
+                }
+            }, 1000);
+        };
+
+        // --- İŞLETME SİSTEMİ ---
+        function handleBusinessUI() {
+            const bizSection = document.getElementById('business-section');
+            const buyBtn = document.getElementById('buy-biz-btn');
+            const collectBtn = document.getElementById('collect-biz-btn');
+            const bizText = document.getElementById('biz-text');
+
+            if (userData.level >= 10) {
+                bizSection.classList.remove('hidden');
+                if (userData.hasBusiness) {
+                    buyBtn.classList.add('hidden');
+                    collectBtn.classList.remove('hidden');
+                    bizText.innerText = "Kuaför İşletmesi Aktif (Saatlik 275 TL)";
+                }
+            }
+        }
+
+        window.buyBusiness = () => {
+            if (userData.money >= 50000) {
+                update(ref(db, 'users/' + currentUser.uid), {
+                    money: userData.money - 50000,
+                    hasBusiness: true,
+                    lastBizCollect: Date.now()
+                });
+            } else { alert("Yeterli paran yok!"); }
+        };
+
+        window.collectBusiness = () => {
+            const now = Date.now();
+            const diff = now - (userData.lastBizCollect || 0);
+            if (diff >= 3600000) { // 1 Saat = 3.6m ms
+                update(ref(db, 'users/' + currentUser.uid), {
+                    money: userData.money + 275,
+                    lastBizCollect: now
+                });
+                alert("275 TL Toplandı!");
+            } else {
+                const kalanDakika = Math.ceil((3600000 - diff) / 60000);
+                alert(`Henüz vakti gelmedi! ${kalanDakika} dk sonra gel.`);
+            }
+        };
+
+        // --- CHAT VE PROFİL ---
+        window.sendMessage = () => {
+            const input = document.getElementById('chat-input');
+            if (!input.value) return;
+            push(ref(db, 'chat'), {
+                uid: currentUser.uid,
+                name: userData.username,
+                msg: input.value,
+                time: serverTimestamp()
+            });
+            input.value = '';
+        };
+
+        function listenChat() {
+            onValue(ref(db, 'chat'), (snap) => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML = '';
+                const data = snap.val();
+                if (data) {
+                    Object.values(data).slice(-15).forEach(m => {
+                        box.innerHTML += `<div><b class="text-blue-400 cursor-pointer" onclick="viewProfile('${m.uid}')">${m.name}:</b> ${m.msg}</div>`;
+                    });
+                    box.scrollTop = box.scrollHeight;
+                }
+            });
+        }
+
+        function listenActiveUsers() {
+            onValue(ref(db, 'users'), (snap) => {
+                const list = document.getElementById('active-users');
+                list.innerHTML = '';
+                const users = snap.val();
+                for (let id in users) {
+                    if (users[id].isOnline) {
+                        list.innerHTML += `
+                            <div class="flex justify-between items-center bg-slate-800/40 p-2 rounded cursor-pointer hover:bg-slate-700" onclick="viewProfile('${id}')">
+                                <span>${users[id].username}</span>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 rounded-full">Aktif</span>
+                            </div>`;
+                    }
+                }
+            });
+        }
+
+        window.viewProfile = async (uid) => {
+            const snap = await get(ref(db, 'users/' + uid));
+            const data = snap.val();
+            document.getElementById('prof-name').innerText = data.username;
+            document.getElementById('prof-money').innerText = data.money.toLocaleString() + " TL";
+            document.getElementById('prof-level').innerText = data.level;
+            document.getElementById('prof-biz').innerText = data.hasBusiness ? "Kuaför" : "Yok";
+            document.getElementById('prof-avatar').innerText = data.username[0].toUpperCase();
+            document.getElementById('profile-modal').classList.remove('hidden');
+        };
+
+        window.closeProfile = () => document.getElementById('profile-modal').classList.add('hidden');
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
